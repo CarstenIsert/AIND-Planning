@@ -73,7 +73,8 @@ class AirCargoProblem(Problem):
                         l_action = Action(expr("Load({},{},{})".format(cargo, plane, airport)),
                                             [precond_pos, precond_neg],
                                             [effect_add, effect_rem])
-            loads.append(l_action)            
+                        print("Load", l_action)
+                        loads.append(l_action)            
 
             return loads
 
@@ -97,7 +98,8 @@ class AirCargoProblem(Problem):
                         u_action = Action(expr("Unload({},{},{})".format(cargo, plane, airport)),
                                             [precond_pos, precond_neg],
                                             [effect_add, effect_rem])
-            unloads.append(u_action)            
+                        print("UnLoad", u_action)
+                        unloads.append(u_action)            
 
             return unloads
 
@@ -147,6 +149,7 @@ class AirCargoProblem(Problem):
             if is_possible:
                 possible_actions.append(action)
         return possible_actions
+
 
     def result(self, state: str, action: Action):
         """ Return the state that results from executing the given
