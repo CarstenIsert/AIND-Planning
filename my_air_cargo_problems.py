@@ -73,7 +73,6 @@ class AirCargoProblem(Problem):
                         l_action = Action(expr("Load({},{},{})".format(cargo, plane, airport)),
                                             [precond_pos, precond_neg],
                                             [effect_add, effect_rem])
-                        print("Load", l_action)
                         loads.append(l_action)            
 
             return loads
@@ -98,7 +97,6 @@ class AirCargoProblem(Problem):
                         u_action = Action(expr("Unload({},{},{})".format(cargo, plane, airport)),
                                             [precond_pos, precond_neg],
                                             [effect_add, effect_rem])
-                        print("UnLoad", u_action)
                         unloads.append(u_action)            
 
             return unloads
