@@ -213,7 +213,15 @@ class AirCargoProblem(Problem):
         executed.
         """
         # TODO implement (see Russell-Norvig Ed-3 10.2.3  or Russell-Norvig Ed-2 11.2)
-        count = 0
+        #kb = PropKB()
+        #kb.tell(decode_state(node, self.state_map).pos_sentence())
+        current_state = decode_state(node.state, self.state_map).pos
+        print(current_state)
+        count = len(self.goal)
+        for clause in self.goal:
+            if clause in current_state:
+                count -= 1
+        print("Ignore preconditions count: ", count)
         return count
 
 
