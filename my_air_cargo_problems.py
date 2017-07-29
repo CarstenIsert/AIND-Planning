@@ -56,12 +56,33 @@ class AirCargoProblem(Problem):
 
         def load_actions():
             """Create all concrete Load actions and return a list
+            Action(Load(c, p, a),
+                PRECOND: At(c, a) ∧ At(p, a) ∧ Cargo(c) ∧ Plane(p) ∧ Airport(a)
+                EFFECT: ¬ At(c, a) ∧ In(c, p))
 
             :return: list of Action objects
             """
-            loads = []
-            # TODO create all load ground actions from the domain Load action
-            return loads
+#            for airport in self.airports:
+#                for plane in self.planes:
+#                    for cargo in self.cargos:
+                        
+            precond_pos = [expr("At(C1,SFO)"),expr("At(P1,SFO"),expr("Cargo(C1)"),expr("Plane(P1)"),expr("Airport(SFO)")]
+            precond_neg = []
+            effect_add = [expr("In(C1,P1")]
+            effect_rem = [expr("At(C1,SFO)")]
+            l1_action = Action(expr("Load(C1,P1,SFO)"),
+                                [precond_pos, precond_neg],
+                                [effect_add, effect_rem])
+
+            precond_pos = [expr("At(C2,JFK)"),expr("At(P2,JFK"),expr("Cargo(C2)"),expr("Plane(P2)"),expr("Airport(JFK)")]
+            precond_neg = []
+            effect_add = [expr("In(C2,P2")]
+            effect_rem = [expr("At(C2,JFK)")]
+            l2_action = Action(expr("Load(C2,P2,JFK)"),
+                                [precond_pos, precond_neg],
+                                [effect_add, effect_rem])
+
+            return [l1_action, l2_action]
 
         def unload_actions():
             """Create all concrete Unload actions and return a list
