@@ -211,17 +211,17 @@ class AirCargoProblem(Problem):
         carried out from the current state in order to satisfy all of the goal
         conditions by ignoring the preconditions required for an action to be
         executed.
+        As mentioned in the text, this means that the goal states can be reached
+        by single actions, so this can be implemented easily by just counting 
+        the goal states already reached in the current node of the search tree
+        and subtracting this from the total number of goal states.
+        (see Russell-Norvig Ed-3 10.2.3  or Russell-Norvig Ed-2 11.2)
         """
-        # TODO implement (see Russell-Norvig Ed-3 10.2.3  or Russell-Norvig Ed-2 11.2)
-        #kb = PropKB()
-        #kb.tell(decode_state(node, self.state_map).pos_sentence())
         current_state = decode_state(node.state, self.state_map).pos
-        print(current_state)
         count = len(self.goal)
         for clause in self.goal:
             if clause in current_state:
                 count -= 1
-        print("Ignore preconditions count: ", count)
         return count
 
 
