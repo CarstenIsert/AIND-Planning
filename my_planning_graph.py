@@ -310,25 +310,19 @@ class PlanningGraph():
         #   a_levels[0] set iff all prerequisite literals for the action hold in S0.  This can be accomplished by testing
         #   to see if a proposed PgNode_a has prenodes that are a subset of the previous S level.  Once an
         #   action node is added, it MUST be connected to the S node instances in the appropriate s_level set.
-        #print("Creating action level", level)
         self.a_levels.append(set())
         prev_s_level = self.s_levels[level]
         # Go through the possible actions, but also the no-ops / persistant actions (small boxes)
         for action in self.all_actions:
             action_node = PgNode_a(action)
             # Level A x is always connected to the S level with the same number
-            # Set operation needs to use issubset, in is not working
             if action_node.prenodes.issubset(prev_s_level):
-                #action_node.show()
-                #print("Connecting as prenodes are in S level.")
                 self.a_levels[level].add(action_node)
-                # Must establish parent / child connections
+                # Must establish parent / child connections. First we need to find the right parent in previous S level.
                 for literal_node in prev_s_level:
                     if literal_node in action_node.prenodes:
-                        #print("Found pre node in S level")
                         action_node.parents.add(literal_node)
                         literal_node.children.add(action_node)
-                        #literal_node.show()
         
 
     def add_literal_level(self, level):
@@ -348,13 +342,11 @@ class PlanningGraph():
         #   may be "added" to the set without fear of duplication.  However, it is important to then correctly create and connect
         #   all of the new S nodes as children of all the A nodes that could produce them, and likewise add the A nodes to the
         #   parent sets of the S nodes
-        #print("Creating S (literal) level", level)
         self.s_levels.append(set())
         s_level = self.s_levels[level]
         prev_a_level = self.a_levels[level-1]
         # Go through the possible actions, but also the no-ops / persistant actions (small boxes)
         for action_node in prev_a_level:
-            #action_node.show()
             for effect_node in action_node.effnodes:
                 # The effect node is the relevant s node and does not have to be instantiated, 
                 # but only referenced and added to this s level
@@ -554,7 +546,6 @@ class PlanningGraph():
         # for each goal in the problem, determine the level cost, then add them together
         for goal in self.problem.goal:
             goal_node = PgNode_s(goal, True)
-            #goal_node.show()
             for level in range(0, len(self.s_levels)-1):
                 if goal_node in self.s_levels[level]:
                     level_sum += level
