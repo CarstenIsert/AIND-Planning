@@ -158,7 +158,7 @@ class AirCargoProblem(Problem):
         :param action: Action applied
         :return: resulting state after action
         """
-        # just copied from example code...
+        # just copied from example cake code...
         new_state = FluentState([], [])
         old_state = decode_state(state, self.state_map)
         for fluent in old_state.pos:
@@ -200,7 +200,6 @@ class AirCargoProblem(Problem):
         out from the current state in order to satisfy each individual goal
         condition.
         """
-        # requires implemented PlanningGraph class
         pg = PlanningGraph(self, node.state)
         pg_levelsum = pg.h_levelsum()
         return pg_levelsum
