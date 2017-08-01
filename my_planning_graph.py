@@ -312,14 +312,23 @@ class PlanningGraph():
         #   action node is added, it MUST be connected to the S node instances in the appropriate s_level set.
         print("Creating action level", level)
         self.a_levels.append(set())
+        prev_s_level = self.s_levels[level]
         # Go through the possible actions, but also the no-ops / persistant actions (small boxes)
-        print("All actions here: ", self.all_actions)
-        print("Matching S-Level: ", self.s_levels[level])
         for action in self.all_actions:
             action_node = PgNode_a(action)
             # Level A x is always connected to the S level with the same number
-            if action_node.prenodes in self.s_levels[level]:
+            # Set operation needs to use issubset, in is not working
+            if action_node.prenodes.issubset(prev_s_level):
+                action_node.show()
+                print("Connecting as prenodes are in S level.")
                 self.a_levels[level].add(action_node)
+                # Must establish parent / child connections
+                for literal_node in prev_s_level:
+                    if literal_node in action_node.prenodes:
+                        print("Found pre node in S level")
+                        action_node.parents.add(literal_node)
+                        literal_node.children.add(action_node)
+                        literal_node.show()
         
 
     def add_literal_level(self, level):
@@ -341,18 +350,20 @@ class PlanningGraph():
         #   parent sets of the S nodes
         print("Creating S (literal) level", level)
         self.s_levels.append(set())
+        s_level = self.s_levels[level]
+        prev_a_level = self.a_levels[level-1]
         # Go through the possible actions, but also the no-ops / persistant actions (small boxes)
-        print("Matching A-Level: ", self.a_levels[level-1])
-        for action in self.a_levels[level-1]:
-            print("Effects for this action: ", action.effnodes)
-            for effect in action.effnodes:
-                literal_node = PgNode_s(effect)
-                # As mentioned above we can easily add the literal as this is a set
-                self.s_levels[level].add(literal_node)
+        for action_node in prev_a_level:
+            action_node.show()
+            for effect_node in action_node.effnodes:
+                # The effect node is the relevant s node and does not have to be instantiated, 
+                # but only referenced and added to this s level
                 # now connect backwards to the parents
-                literal_node.parents.add(action)
+                effect_node.parents.add(action_node)
+                # As mentioned above we can easily add the literal as this is a set
+                s_level.add(effect_node)
                 # now connect the A level to these nodes
-                action.children.add(literal_node)
+                action_node.children.add(effect_node)
 
 
     def update_a_mutex(self, nodeset):
